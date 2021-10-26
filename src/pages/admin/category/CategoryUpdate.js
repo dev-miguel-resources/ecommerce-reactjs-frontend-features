@@ -1,42 +1,44 @@
-import React, { useState, useEffect } from "react";
-import AdminNav from "../../../components/nav/AdminNav";
-import { toast } from "react-toastify";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { getCategory, updateCategory } from "../../../functions/category";
+import { toast } from "react-toastify";
+import { LoadingOutlined } from "@ant-design/icons";
 import CategoryForm from "../../../components/forms/CategoryForm";
+import AdminNav from "../../../components/nav/AdminNav";
+import { getCategory, updateCategory } from "../../../functions/category";
 
 const CategoryUpdate = ({ history, match }) => {
   const { user } = useSelector((state) => ({ ...state }));
 
   const [name, setName] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
-  useEffect(() => {
-    loadCategory();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const loadCategory = () =>
-    getCategory(match.params.slug).then((c) => setName(c.data.category.name));
+  const loadCategory = useCallback(
+    () =>
+      getCategory(match.params.slug).then((c) => {
+        setLoaded(true);
+        setName(c.data.category.name);
+      }),
+    [match.params.slug]
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log(name);
-    setLoading(true);
+    setLoaded(false);
     updateCategory(match.params.slug, { name }, user.token)
       .then((res) => {
-        // console.log(res)
-        setLoading(false);
+        setLoaded(true);
         setName("");
         toast.success(`"${res.data.name}" is updated`);
         history.push("/admin/category");
       })
       .catch((err) => {
         console.log(err);
-        setLoading(false);
-        if (err.response.status === 400) toast.error(err.response.data);
+        setLoaded(true);
+        return err.response.status === 400 && toast.error(err.response.data);
       });
   };
+
+  useEffect(() => loadCategory(), [loadCategory]);
 
   return (
     <div className="container-fluid">
@@ -45,19 +47,18 @@ const CategoryUpdate = ({ history, match }) => {
           <AdminNav />
         </div>
         <div className="col">
-          {loading ? (
-            <h4 className="text-danger">Loading..</h4>
-          ) : (
-            <h4>Update category</h4>
+          {!loaded && <LoadingOutlined />}
+          {loaded && (
+            <>
+              <h4>Update category</h4>
+              <CategoryForm
+                handleSubmit={handleSubmit}
+                name={name}
+                setName={setName}
+              />
+              <hr />
+            </>
           )}
-
-          <CategoryForm
-            handleSubmit={handleSubmit}
-            name={name}
-            setName={setName}
-          />
-
-          <hr />
         </div>
       </div>
     </div>

@@ -1,33 +1,36 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import { LoadingOutlined } from "@ant-design/icons";
 import { getSubs } from "../../functions/sub";
 
 const SubList = () => {
+  const history = useHistory();
   const [subs, setSubs] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
     getSubs().then((res) => {
       setSubs(res.data);
-      setLoading(false);
+      setLoaded(true);
     });
   }, []);
 
   const showSubs = () =>
     subs.map((s) => (
-      <div
+      <button
         key={s._id}
-        className="col btn btn-outlined-primary btn-lg btn-block btn-raised m-3"
+        className="col btn btn-outlined-primary btn-lg btn-block btn-raised m-3 color-blue"
+        onClick={() => history.push(`/sub/${s.slug}`)}
       >
-        <Link to={`/sub/${s.slug}`}>{s.name}</Link>
-      </div>
+        {s.name}
+      </button>
     ));
 
   return (
     <div className="container">
       <div className="row">
-        {loading ? <h4 className="text-center">Loading...</h4> : showSubs()}
+        {!loaded && <LoadingOutlined />}
+        {loaded && showSubs()}
       </div>
     </div>
   );

@@ -7,11 +7,15 @@ export const getSub = async (slug) =>
   await axios.get(`${process.env.REACT_APP_API}/sub/${slug}`);
 
 export const removeSub = async (slug, authtoken) =>
-  await axios.delete(`${process.env.REACT_APP_API}/sub/${slug}`, {
-    headers: {
-      authtoken,
-    },
-  });
+  await axios.patch(
+    `${process.env.REACT_APP_API}/sub/${slug}`,
+    {},
+    {
+      headers: {
+        authtoken,
+      },
+    }
+  );
 
 export const updateSub = async (slug, sub, authtoken) =>
   await axios.put(`${process.env.REACT_APP_API}/sub/${slug}`, sub, {

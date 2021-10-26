@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { LoadingOutlined } from "@ant-design/icons";
 import AdminNav from "../../../components/nav/AdminNav";
 import { getProductsByCount } from "../../../functions/product";
 import AdminProductCard from "../../../components/cards/AdminProductCard";
 import { removeProduct } from "../../../functions/product";
-import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   // redux
   const { user } = useSelector((state) => ({ ...state }));
 
@@ -17,14 +18,13 @@ const AllProducts = () => {
   }, []);
 
   const loadAllProducts = () => {
-    setLoading(true);
     getProductsByCount(100)
       .then((res) => {
         setProducts(res.data);
-        setLoading(false);
+        setLoaded(true);
       })
       .catch((err) => {
-        setLoading(false);
+        setLoaded(true);
         console.log(err);
       });
   };
@@ -53,11 +53,8 @@ const AllProducts = () => {
         </div>
 
         <div className="col">
-          {loading ? (
-            <h4 className="text-danger">Loading...</h4>
-          ) : (
-            <h4>All Products</h4>
-          )}
+          {!loaded && <LoadingOutlined />}
+          {loaded && <h4>All Products</h4>}
           <div className="row">
             {products.map((product) => (
               <div key={product._id} className="col-md-4 pb-3">

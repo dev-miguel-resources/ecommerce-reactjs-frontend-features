@@ -35,7 +35,7 @@ const ProductCreate = () => {
 
   useEffect(() => {
     loadCategories();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadCategories = () =>
@@ -50,9 +50,11 @@ const ProductCreate = () => {
         window.location.reload();
       })
       .catch((err) => {
-        console.log(err);
-        // if (err.response.status === 400) toast.error(err.response.data);
-        toast.error(err.response.data.err);
+        const { err: error, code } = err.response.data;
+        const duplicateKey = code === 11000;
+        const errMessage = duplicateKey ? "This product already exists" : error;
+        console.log(errMessage);
+        toast.error(errMessage);
       });
   };
 
@@ -80,11 +82,8 @@ const ProductCreate = () => {
         </div>
 
         <div className="col-md-10">
-          {loading ? (
-            <LoadingOutlined className="text-danger h1" />
-          ) : (
-            <h4>Product create</h4>
-          )}
+          {loading && <LoadingOutlined />}
+          {!loading && <h4>Product create</h4>}
           <hr />
 
           {/* {JSON.stringify(values.images)} */}

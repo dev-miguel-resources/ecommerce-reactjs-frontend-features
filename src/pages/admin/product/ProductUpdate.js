@@ -39,7 +39,7 @@ const ProductUpdate = ({ match, history }) => {
   useEffect(() => {
     loadProduct();
     loadCategories();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadProduct = () => {
@@ -124,11 +124,8 @@ const ProductUpdate = ({ match, history }) => {
         </div>
 
         <div className="col-md-10">
-          {loading ? (
-            <LoadingOutlined className="text-danger h1" />
-          ) : (
-            <h4>Product update</h4>
-          )}
+          {loading && <LoadingOutlined />}
+          {!loading && <h4>Product update</h4>}
 
           {/* {JSON.stringify(values)} */}
 

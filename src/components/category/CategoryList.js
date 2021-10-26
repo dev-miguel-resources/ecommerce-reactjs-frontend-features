@@ -1,37 +1,36 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import { LoadingOutlined } from "@ant-design/icons";
 import { getCategories } from "../../functions/category";
 
 const CategoryList = () => {
+  const history = useHistory();
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
     getCategories().then((c) => {
       setCategories(c.data);
-      setLoading(false);
+      setLoaded(true);
     });
   }, []);
 
   const showCategories = () =>
     categories.map((c) => (
-      <div
+      <button
         key={c._id}
-        className="col btn btn-outlined-primary btn-lg btn-block btn-raised m-3"
+        className="col btn btn-outlined-primary btn-lg btn-block btn-raised m-3 color-blue"
+        onClick={() => history.push(`/category/${c.slug}`)}
       >
-        <Link to={`/category/${c.slug}`}>{c.name}</Link>
-      </div>
+        {c.name}
+      </button>
     ));
 
   return (
     <div className="container">
       <div className="row">
-        {loading ? (
-          <h4 className="text-center">Loading...</h4>
-        ) : (
-          showCategories()
-        )}
+        {!loaded && <LoadingOutlined />}
+        {loaded && showCategories()}
       </div>
     </div>
   );

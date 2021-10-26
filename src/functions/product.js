@@ -11,11 +11,15 @@ export const getProductsByCount = async (count) =>
   await axios.get(`${process.env.REACT_APP_API}/products/${count}`);
 
 export const removeProduct = async (slug, authtoken) =>
-  await axios.delete(`${process.env.REACT_APP_API}/product/${slug}`, {
-    headers: {
-      authtoken,
-    },
-  });
+  await axios.patch(
+    `${process.env.REACT_APP_API}/product/${slug}`,
+    {},
+    {
+      headers: {
+        authtoken,
+      },
+    }
+  );
 
 export const getProduct = async (slug) =>
   await axios.get(`${process.env.REACT_APP_API}/product/${slug}`);

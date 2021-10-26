@@ -3,39 +3,34 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import ProductCardInCheckout from "../components/cards/ProductCardInCheckout";
 import { userCart } from "../functions/user";
+import { useCurrentItemHeader } from "../hooks/useCurrentItemHeader";
 
 const Cart = ({ history }) => {
-  const { cart, user } = useSelector((state) => ({ ...state }));
+  useCurrentItemHeader();
   const dispatch = useDispatch();
+  const { cart, user } = useSelector((state) => ({ ...state }));
 
-  const getTotal = () => {
-    return cart.reduce((currentValue, nextValue) => {
-      return currentValue + nextValue.count * nextValue.price;
-    }, 0);
+  const getTotal = () =>
+    cart.reduce((curr, next) => curr + next.count * next.price, 0);
+
+  const thenEndpointAction = (res) => {
+    console.log("CART POST RES", res);
+    return res.data.ok && history.push("/checkout");
   };
 
+  const catchEndpointAction = (err) => console.log("cart save err", err);
+
   const saveOrderToDb = () => {
-    // console.log("cart", JSON.stringify(cart, null, 4));
     userCart(cart, user.token)
-      .then((res) => {
-        console.log("CART POST RES", res);
-        if (res.data.ok) history.push("/checkout");
-      })
-      .catch((err) => console.log("cart save err", err));
+      .then((res) => thenEndpointAction(res))
+      .catch((err) => catchEndpointAction(err));
   };
 
   const saveCashOrderToDb = () => {
-    // console.log("cart", JSON.stringify(cart, null, 4));
-    dispatch({
-      type: "COD",
-      payload: true,
-    });
+    dispatch({ type: "COD", payload: true });
     userCart(cart, user.token)
-      .then((res) => {
-        console.log("CART POST RES", res);
-        if (res.data.ok) history.push("/checkout");
-      })
-      .catch((err) => console.log("cart save err", err));
+      .then((res) => thenEndpointAction(res))
+      .catch((err) => catchEndpointAction(err));
   };
 
   const showCartItems = () => (

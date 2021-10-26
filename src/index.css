@@ -7,3 +7,55 @@
 .pointer {
   cursor: pointer;
 }
+
+.ant-radio-wrapper {
+  display: block !important;
+}
+
+.error-wrapper {
+  margin-top: 32px;
+  text-align: center;
+}
+
+.error-title {
+  color: #5d5d5d;
+}
+
+input[type="number"] {
+  max-width: 46px;
+}
+
+.ant-menu-horizontal > .ant-menu-item-selected a span {
+  color: inherit;
+}
+
+.table-main-info-wrapper {
+  margin-bottom: 6px;
+  padding: 6px;
+}
+
+.table-main-info-wrapper .row.container {
+  place-items: center;
+}
+
+select {
+  cursor: pointer;
+  width: min-content !important;
+}
+
+.responsive-table {
+  overflow-x: auto;
+  width: 100%;
+  padding: initial;
+}
+
+.anticon.anticon-loading.anticon-spin {
+  display: block;
+  margin: 0 auto;
+  padding: 16px 0;
+}
+
+.color-blue,
+.color-blue:hover {
+  color: #1890ff;
+}

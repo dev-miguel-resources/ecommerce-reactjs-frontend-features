@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const LoadingToRedirect = () => {
   const [count, setCount] = useState(5);
@@ -15,11 +16,7 @@ const LoadingToRedirect = () => {
     return () => clearInterval(interval);
   }, [count, history]);
 
-  return (
-    <div className="container p-5 text-center">
-      <p>Redirecting you in {count} seconds</p>
-    </div>
-  );
+  return <LoadingOutlined />;
 };
 
 export default LoadingToRedirect;

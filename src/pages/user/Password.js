@@ -1,9 +1,10 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { LoadingOutlined } from "@ant-design/icons";
+import { toast } from "react-toastify";
+import { auth } from "../../firebase";
 import UserNav from "../../components/nav/UserNav";
 import AdminNav from "../../components/nav/AdminNav";
-import { auth } from "../../firebase";
-import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
 
 const Password = () => {
   const [password, setPassword] = useState("");
@@ -63,11 +64,8 @@ const Password = () => {
           )}
         </div>
         <div className="col">
-          {loading ? (
-            <h4 className="text-danger">Loading..</h4>
-          ) : (
-            <h4>Password Update</h4>
-          )}
+          {loading && <LoadingOutlined />}
+          {!loading && <h4>Password Update</h4>}
           {passwordUpdateForm()}
         </div>
       </div>

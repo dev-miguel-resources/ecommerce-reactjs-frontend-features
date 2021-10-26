@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Menu, Badge } from "antd";
 import {
   AppstoreOutlined,
@@ -14,33 +14,28 @@ import firebase from "firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Search from "../forms/Search";
+import { useCurrentItemHeader } from "../../hooks/useCurrentItemHeader";
 
 const { SubMenu, Item } = Menu;
 
 const Header = () => {
-  const [current, setCurrent] = useState("home");
-
-  let dispatch = useDispatch();
-  let { user, cart } = useSelector((state) => ({ ...state }));
-
-  let history = useHistory();
-
-  const handleClick = (e) => {
-    // console.log(e.key);
-    setCurrent(e.key);
-  };
+  const { setKey } = useCurrentItemHeader();
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const { cart, header, user } = useSelector((state) => ({ ...state }));
 
   const logout = () => {
     firebase.auth().signOut();
-    dispatch({
-      type: "LOGOUT",
-      payload: null,
-    });
+    dispatch({ type: "LOGOUT", payload: null });
     history.push("/login");
   };
 
   return (
-    <Menu onClick={handleClick} selectedKeys={[current]} mode="horizontal">
+    <Menu
+      onClick={({ key }) => setKey(key)}
+      selectedKeys={[header]}
+      mode="horizontal"
+    >
       <Item key="home" icon={<AppstoreOutlined />}>
         <Link to="/">Home</Link>
       </Item>
