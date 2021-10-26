@@ -56,7 +56,7 @@ const Orders = ({ orders, handleStatusChange }) => {
                     handleStatusChange(order._id, e.target.value)
                   }
                   className="form-control"
-                  defaultValue={order.orderStatus}
+                  value={order.orderStatus}
                   name="status"
                 >
                   <option value="Not Processed">Not Processed</option>
