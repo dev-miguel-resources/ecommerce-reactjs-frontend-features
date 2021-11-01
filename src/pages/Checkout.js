@@ -16,6 +16,7 @@ const Checkout = ({ history }) => {
   const [total, setTotal] = useState(0);
   const [address, setAddress] = useState("");
   const [addressSaved, setAddressSaved] = useState(false);
+  const [disabledButton, setDisabledButton] = useState(false);
   const [coupon, setCoupon] = useState("");
   // discount price
   const [totalAfterDiscount, setTotalAfterDiscount] = useState(0);
@@ -124,6 +125,7 @@ const Checkout = ({ history }) => {
   );
 
   const createCashOrder = () => {
+    setDisabledButton(true);
     createCashOrderForUser(user.token, COD, couponTrueOrFalse).then((res) => {
       console.log("USER CASH ORDER CREATED RES ", res);
       // empty cart form redux, local Storage, reset coupon, reset COD, redirect
@@ -187,23 +189,15 @@ const Checkout = ({ history }) => {
 
         <div className="row">
           <div className="col-md-6">
-            {COD ? (
-              <button
-                className="btn btn-primary"
-                disabled={!addressSaved || !products.length}
-                onClick={createCashOrder}
-              >
-                Place Order
-              </button>
-            ) : (
-              <button
-                className="btn btn-primary"
-                disabled={!addressSaved || !products.length}
-                onClick={() => history.push("/payment")}
-              >
-                Place Order
-              </button>
-            )}
+            <button
+              className="btn btn-primary"
+              disabled={!addressSaved || !products.length || disabledButton}
+              onClick={() =>
+                COD ? createCashOrder() : history.push("/payment")
+              }
+            >
+              Place Order
+            </button>
           </div>
 
           <div className="col-md-6">

@@ -106,10 +106,11 @@ const CreateCouponPage = () => {
               <br />
               <DatePicker
                 className="form-control"
+                dateFormat="dd/MM/yy"
+                required
                 selected={expiry}
                 value={expiry}
                 onChange={(date) => setExpiry(date)}
-                required
               />
             </div>
 

@@ -13,12 +13,13 @@ import _ from "lodash";
 import { useSelector, useDispatch } from "react-redux";
 import { addToWishlist } from "../../functions/user";
 import { toast } from "react-toastify";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 const { TabPane } = Tabs;
 
 // this is childrend component of Product page
 const SingleProduct = ({ product, onStarClick, star }) => {
+  const { slug } = useParams();
   const [tooltip, setTooltip] = useState("Click to add");
 
   // redux
@@ -65,11 +66,16 @@ const SingleProduct = ({ product, onStarClick, star }) => {
 
   const handleAddToWishlist = (e) => {
     e.preventDefault();
-    addToWishlist(product._id, user.token).then((res) => {
-      console.log("ADDED TO WISHLIST", res.data);
-      toast.success("Added to wishlist");
-      history.push("/user/wishlist");
-    });
+    return user?.token
+      ? addToWishlist(product._id, user.token).then((res) => {
+          console.log("ADDED TO WISHLIST", res.data);
+          toast.success("Added to wishlist");
+          history.push("/user/wishlist");
+        })
+      : history.push({
+          pathname: "/login",
+          state: { from: `/product/${slug}` },
+        });
   };
 
   return (
@@ -77,10 +83,21 @@ const SingleProduct = ({ product, onStarClick, star }) => {
       <div className="col-md-7">
         {images && images.length ? (
           <Carousel showArrows={true} autoPlay infiniteLoop>
-            {images && images.map((i) => <img alt="carousel-img-prod" src={i.url} key={i.public_id} />)}
+            {images &&
+              images.map((i) => (
+                <img alt="carousel-img-prod" src={i.url} key={i.public_id} />
+              ))}
           </Carousel>
         ) : (
-          <Card cover={<img alt="cov-not-prod" src={Laptop} className="mb-3 card-image" />}></Card>
+          <Card
+            cover={
+              <img
+                alt="cov-not-prod"
+                src={Laptop}
+                className="mb-3 card-image"
+              />
+            }
+          ></Card>
         )}
 
         <Tabs type="card">
@@ -112,7 +129,8 @@ const SingleProduct = ({ product, onStarClick, star }) => {
               </a>
             </Tooltip>,
             <a onClick={handleAddToWishlist}>
-              <HeartOutlined className="text-info" /> <br /> Add to Wishlist
+              <HeartOutlined className="text-info" /> <br />
+              {`${user?.token ? "" : "Login To "}Add To Wishlist`}
             </a>,
             <RatingModal>
               <StarRating

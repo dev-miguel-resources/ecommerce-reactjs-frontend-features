@@ -31,14 +31,15 @@ const CategoryHome = ({ match }) => {
           )}
         </div>
       </div>
-
-      <div className="row">
-        {products.map((p) => (
-          <div className="col" key={p._id}>
-            <ProductCard product={p} />
-          </div>
-        ))}
-      </div>
+      {!!products?.length && (
+        <div className="row">
+          {products.map((p) => (
+            <div className="col" key={p._id}>
+              <ProductCard product={p} />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
